@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateLessonRequest;
+use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
 use PHPUnit\Exception;
@@ -22,12 +23,19 @@ class CourseController extends Controller
     public function createLesson(CreateLessonRequest $request, $courseId)
     {
         try {
-            $validData = $request->validated();
-            $validData['course_id'] = $courseId;
-            $result = Lesson::query()->create(
-                $validData
-            );
-            return $this->jsonResponse(true, 'created', $result);
+            $check = Course::query()->find($courseId);
+
+            if ($check) {
+                $validData = $request->validated();
+                $validData['course_id'] = $courseId;
+                $result = Lesson::query()->create(
+                    $validData
+                );
+                return $this->jsonResponse(true, 'created', $result);
+            } else {
+                return $this->jsonResponse(false, 'course does\'nt exist.', [], 404);
+            }
+
         } catch (Exception $e) {
             return $this->jsonResponse(false, 'error', $e, 409);
         }
