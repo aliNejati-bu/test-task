@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateCourseRequest extends FormRequest
 {
@@ -24,5 +25,22 @@ class UpdateCourseRequest extends FormRequest
         return [
             'name' => ['required', 'max:255'],
         ];
+    }
+
+    public function validationData()
+    {
+        if(empty($this->all())){
+            $res = [
+                'success' => false,
+                'message' => 'Check your request',
+            ];
+
+
+            throw new HttpResponseException(
+                response()->json($res, 422)
+            );
+        }
+
+        return $this->all();
     }
 }

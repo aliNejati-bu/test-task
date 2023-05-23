@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CreateLessonRequest extends FormRequest
 {
@@ -25,5 +26,22 @@ class CreateLessonRequest extends FormRequest
             'name' => ['required', 'max:255'],
             'price' => ['required', 'numeric']
         ];
+    }
+
+    public function validationData()
+    {
+        if(empty($this->all())){
+            $res = [
+                'success' => false,
+                'message' => 'Check your request',
+            ];
+
+
+            throw new HttpResponseException(
+                response()->json($res, 422)
+            );
+        }
+
+        return $this->all();
     }
 }
