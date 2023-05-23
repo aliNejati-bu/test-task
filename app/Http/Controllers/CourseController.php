@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateLessonRequest;
+use App\Http\Requests\UpdateCourseRequest;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
@@ -39,6 +40,21 @@ class CourseController extends Controller
         } catch (Exception $e) {
             return $this->jsonResponse(false, 'error', $e, 409);
         }
+    }
 
+    public function updateCourseName(UpdateCourseRequest $request, $courseID)
+    {
+        try {
+            $course = Course::query()->find($courseID);
+            if ($course) {
+                $course->name = $request->validated('name');
+                $course->save();
+                return $this->jsonResponse(true, 'updated.');
+            } else {
+                return $this->jsonResponse(false, 'course does\'nt exist.', [], 404);
+            }
+        } catch (Exception $e) {
+            return $this->jsonResponse(false, 'error', $e, 409);
+        }
     }
 }

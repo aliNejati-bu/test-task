@@ -23,3 +23,4 @@ Route::get('/', function () {
     return "sdgswagj";
 });
 Route::post('/course/{courseId}/lesson', [CourseController::class, 'createLesson']);
+Route::patch('/course/{courseId}/name', [CourseController::class, 'updateCourseName']);
